@@ -69,4 +69,4 @@ with gr.Blocks(title="🎓 LND AI - Tuteur Scientifique", theme=gr.themes.Soft()
 
 # Lancement de l'application
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share=True)
