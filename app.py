@@ -65,4 +65,4 @@ with gr.Blocks(title="🎓 LND AI", theme=gr.themes.Soft()) as demo:
 
 # Lancement avec thème corrigé
 if __name__ == "__main__":
-    demo.launch(share=True, theme=gr.themes.Soft())
+    demo.launch(share=True, with gr.Blocks(title="🎓 LND AI") as demo:
