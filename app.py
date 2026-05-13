@@ -1,68 +1,70 @@
 import gradio as gr
 
-# 🎓 Prompt système : LND AI détecte automatiquement le contexte
+# 🎓 Prompt système : Le "cerveau pédagogique" de LND AI
 SYSTEM_PROMPT = """Tu es LND AI, un tuteur expert multi-disciplines.
 
-Domaines : Maths, Physique, Chimie, Biologie, Informatique & IT.
+Domaines d'expertise :
+- 📐 Mathématiques (algèbre, analyse, probabilités, statistiques)
+- 🔬 Physique (mécanique, électromagnétisme, thermodynamique, optique, quantique) ⭐ PRIORITAIRE
+- ⚗️ Chimie (réactions, stoichiométrie, organique, inorganique)
+- 🧬 Biologie (cellulaire, génétique, physiologie, écosystèmes)
+- 💻 Informatique & Technologies IT (algorithmes, programmation, réseaux, cybersécurité, IA) ⭐ PRIORITAIRE
 
-Règles :
-1. Réponds en français, ton clair et encourageant.
-2. Détecte automatiquement la matière et le niveau.
-3. Décompose en étapes pour les problèmes complexes.
-4. Montre la démarche avant le résultat.
-5. Utilise LaTeX pour les formules : $E=mc^2$
-6. Si flou, pose une question pour préciser.
-7. Termine par : "Veux-tu un exercice ou que je détaille un point ?"
+Règles pédagogiques STRICTES :
+1. Réponds TOUJOURS en français, avec un ton clair, patient et encourageant.
+2. Détecte automatiquement la matière et le niveau à partir de la question.
+3. Décompose chaque réponse en étapes numérotées pour les problèmes complexes.
+4. Pour les calculs : montre la démarche avant le résultat final.
+5. Utilise le format LaTeX pour les formules : $E=mc^2$ ou $$...$$
+6. Si la question est floue, pose une question pour préciser avant de répondre.
+7. Adapte automatiquement ton niveau de détail (débutant → intermédiaire → avancé).
+8. Termine chaque réponse par : "Veux-tu un exercice d'application ou que je détaille un point ?"
+
+Structure de réponse type :
+🎯 **Concept clé** : [explication courte du concept]
+📝 **Développement** : [étapes détaillées numérotées]
+💡 **Astuce** : [conseil pratique ou moyen mnémotechnique]
+✅ **Vérification** : [si applicable, méthode pour vérifier le résultat]
 """
 
-def repondre(question, history=None):
-    """Fonction de chat simple"""
-    if not question or not question.strip():
-        return "👋 Bonjour ! Pose ta question en sciences ou informatique. Je suis là pour t'aider !"
+def repondre_chat(message, history):
+    """Fonction chatbot : reçoit le message + l'historique"""
+    if not message or not message.strip():
+        return "👋 Bonjour ! Je suis LND AI. Pose ta question en maths, physique, chimie, biologie ou informatique."
     
-    # 🔄 Réponse de test (on connectera l'IA après)
-    return f"""✅ **LND AI a reçu :** "{question}"
+    # 🔄 RÉPONSE DÉMO (pour l'instant)
+    # Le SYSTEM_PROMPT ci-dessus sera utilisé quand on connectera la vraie IA
+    return f"""✅ **LND AI a reçu ta question :**
 
-⏳ *Mode démo : la vraie IA sera connectée à la prochaine étape.*
+📝 \"{message}\"
 
-💡 **Exemples de questions :**
-- "Explique la loi d'Ohm"
-- "Dérivée de x² + 3x ?"
-- "Comment fonctionne une boucle for en Python ?"
-- "Qu'est-ce qu'une réaction redox ?"
+⏳ *Mode démo actif*
 
-🎯 Pose ta vraie question, je suis prêt !"""
+🔜 **Prochaine étape** : Je vais connecter un modèle IA gratuit qui utilisera les règles suivantes :
 
-# 🎨 Interface chatbot simple et compatible
-with gr.Blocks(title="🎓 LND AI") as demo:
-    gr.Markdown("# 🎓 LND AI\n*Tuteur intelligent en sciences et technologies*")
-    gr.Markdown("Pose ta question. Je détecte automatiquement le contexte. 🚀")
-    
-    # Interface simple : 1 input texte, 1 output texte
-    with gr.Row():
-        question = gr.Textbox(
-            label="Ta question",
-            placeholder="Ex: Explique la 2ème loi de Newton...",
-            lines=2
-        )
-        sortie = gr.Textbox(label="Réponse de LND AI", lines=10)
-    
-    btn = gr.Button("🚀 Envoyer", variant="primary")
-    btn.click(fn=repondre, inputs=question, outputs=sortie)
-    
-    # Exemples cliquables
-    gr.Examples(
-        examples=[
-            "Explique la loi d'Ohm avec un exemple",
-            "Comment calculer une dérivée ?",
-            "Qu'est-ce qu'une boucle for en Python ?",
-            "Explique le théorème de Pythagore"
-        ],
-        inputs=question
-    )
-    
-    gr.Markdown("---\n*Projet LND AI par @lnkstructures — Licence MIT*")
+{SYSTEM_PROMPT}
 
-# Lancement avec thème corrigé
+💡 **En attendant**, teste l'interface avec :
+• \"Explique la loi d'Ohm\"
+• \"Dérivée de x² + 3x ?\"
+• \"Comment fonctionne une boucle for ?\"
+"""
+
+# 🎨 Interface style messagerie (ChatGPT-like)
+demo = gr.ChatInterface(
+    fn=repondre_chat,
+    title="🎓 LND AI",
+    description="Professeur intelligent en sciences et technologies — Je détecte automatiquement le contexte et t'explique pas à pas.",
+    examples=[
+        "Explique la loi d'Ohm avec un exemple concret",
+        "Comment calculer la dérivée de x² + 3x ?",
+        "Qu'est-ce qu'une réaction d'oxydoréduction ?",
+        "Explique le théorème de Pythagore",
+        "Comment fonctionne une boucle for en Python ?",
+        "Qu'est-ce que l'entropie en thermodynamique ?"
+    ],
+    theme="soft"  # Thème intégré directement dans ChatInterface
+)
+
 if __name__ == "__main__":
     demo.launch(share=True)
