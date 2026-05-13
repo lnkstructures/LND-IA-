@@ -39,7 +39,7 @@ def repondre_chat(message, history):
         from openai import OpenAI
         
         client = OpenAI(
-            api_key="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"
+            api_key="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",
             base_url="https://openrouter.ai/api/v1"
         )
         
