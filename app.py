@@ -34,7 +34,7 @@ def repondre(question, history=None):
 🎯 Pose ta vraie question, je suis prêt !"""
 
 # 🎨 Interface chatbot simple et compatible
-with gr.Blocks(title="🎓 LND AI", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="🎓 LND AI", as demo:
     gr.Markdown("# 🎓 LND AI\n*Tuteur intelligent en sciences et technologies*")
     gr.Markdown("Pose ta question. Je détecte automatiquement le contexte. 🚀")
     
@@ -65,4 +65,4 @@ with gr.Blocks(title="🎓 LND AI", theme=gr.themes.Soft()) as demo:
 
 # Lancement avec thème corrigé
 if __name__ == "__main__":
-    demo.launch(share=True, with gr.Blocks(title="🎓 LND AI") as demo:
+    demo.launch(share=True)
