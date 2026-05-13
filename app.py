@@ -1,3 +1,4 @@
+
 import gradio as gr
 import os
 
@@ -28,7 +29,12 @@ Structure de réponse type :
 ✅ **Vérification** : [si applicable, méthode pour vérifier le résultat]
 """
 
-    # 🧠 Connexion au vrai cerveau IA
+def repondre_chat(message, history):
+    """Fonction chatbot : reçoit le message + l'historique"""
+    if not message or not message.strip():
+        return "👋 Bonjour ! Je suis LND AI. Pose ta question en maths, physique, chimie, biologie ou informatique."
+    
+    # 🧠 Connexion au vrai cerveau IA via OpenRouter
     try:
         from openai import OpenAI
         
@@ -45,7 +51,7 @@ Structure de réponse type :
         
         # Appel à l'IA
         response = client.chat.completions.create(
-            model="qwen/qwen-2.5-7b-instruct",  # Modèle gratuit, performant, multilingue
+            model="qwen/qwen-2.5-7b-instruct",  # Modèle gratuit et performant
             messages=messages,
             temperature=0.3,
             max_tokens=1000
@@ -56,13 +62,27 @@ Structure de réponse type :
         
     except Exception as e:
         # Fallback si la clé n'est pas configurée
-        return f"⚠️ Mode démo : clé API non configurée.\n\nTa question : \"{message}\"\n\nPour activer l'IA complète : ajoute ta clé OpenRouter dans les secrets Colab."
+        return f"""⚠️ **Mode démo** - Clé API non configurée
+
+📝 Ta question : "{message}"
+
+🔑 **Pour activer l'IA complète :**
+1. Va dans Runtime → Manage secrets dans Colab
+2. Ajoute un secret nommé : `OPENROUTER_API_KEY`
+3. Colle ta clé OpenRouter (sk-or-...)
+4. Relance ce notebook
+
+💡 En attendant, teste l'interface avec :
+• "Explique la loi d'Ohm"
+• "Dérivée de x² + 3x ?"
+• "Comment fonctionne une boucle for ?"
+"""
 
 # 🎨 Interface style messagerie (ChatGPT-like)
 demo = gr.ChatInterface(
     fn=repondre_chat,
     title="🎓 LND AI",
-    description="Professeur intelligent en sciences et technologies — Je détecte automatiquement le contexte et t'explique pas à pas.",
+    description="Tuteur intelligent en sciences et technologies — Je détecte automatiquement le contexte et t'explique pas à pas.",
     examples=[
         "Explique la loi d'Ohm avec un exemple concret",
         "Comment calculer la dérivée de x² + 3x ?",
@@ -71,7 +91,7 @@ demo = gr.ChatInterface(
         "Comment fonctionne une boucle for en Python ?",
         "Qu'est-ce que l'entropie en thermodynamique ?"
     ],
-    theme="soft"  # Thème intégré directement dans ChatInterface
+    theme="soft"
 )
 
 if __name__ == "__main__":
