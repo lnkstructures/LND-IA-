@@ -1,4 +1,5 @@
 import gradio as gr
+import os
 
 # 🎓 Prompt système : Le "cerveau pédagogique" de LND AI
 SYSTEM_PROMPT = """Tu es LND AI, un tuteur expert multi-disciplines.
@@ -27,28 +28,35 @@ Structure de réponse type :
 ✅ **Vérification** : [si applicable, méthode pour vérifier le résultat]
 """
 
-def repondre_chat(message, history):
-    """Fonction chatbot : reçoit le message + l'historique"""
-    if not message or not message.strip():
-        return "👋 Bonjour ! Je suis LND AI. Pose ta question en maths, physique, chimie, biologie ou informatique."
-    
-    # 🔄 RÉPONSE DÉMO (pour l'instant)
-    # Le SYSTEM_PROMPT ci-dessus sera utilisé quand on connectera la vraie IA
-    return f"""✅ **LND AI a reçu ta question :**
-
-📝 \"{message}\"
-
-⏳ *Mode démo actif*
-
-🔜 **Prochaine étape** : Je vais connecter un modèle IA gratuit qui utilisera les règles suivantes :
-
-{SYSTEM_PROMPT}
-
-💡 **En attendant**, teste l'interface avec :
-• \"Explique la loi d'Ohm\"
-• \"Dérivée de x² + 3x ?\"
-• \"Comment fonctionne une boucle for ?\"
-"""
+    # 🧠 Connexion au vrai cerveau IA
+    try:
+        from openai import OpenAI
+        
+        client = OpenAI(
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1"
+        )
+        
+        # Construction du message avec le prompt système
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": message}
+        ]
+        
+        # Appel à l'IA
+        response = client.chat.completions.create(
+            model="qwen/qwen-2.5-7b-instruct",  # Modèle gratuit, performant, multilingue
+            messages=messages,
+            temperature=0.3,
+            max_tokens=1000
+        )
+        
+        reponse_ia = response.choices[0].message.content
+        return reponse_ia
+        
+    except Exception as e:
+        # Fallback si la clé n'est pas configurée
+        return f"⚠️ Mode démo : clé API non configurée.\n\nTa question : \"{message}\"\n\nPour activer l'IA complète : ajoute ta clé OpenRouter dans les secrets Colab."
 
 # 🎨 Interface style messagerie (ChatGPT-like)
 demo = gr.ChatInterface(
